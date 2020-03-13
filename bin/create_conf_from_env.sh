@@ -4,38 +4,35 @@
 assert_env() {
     val=$(eval echo \$$1)
     if [ "${val}" = "" ]; then
-        if [ "$2" = "" ]; then
-            echo "SET $1"
-            exit 1
-        else
-            eval $1=$2
-        fi
+        echo "SET $1"
+        exit 1
     fi
 }
 
-assert_env 'API_PG_USER'
-assert_env 'API_PG_PASSWORD'
-assert_env 'PGHOST'
-assert_env 'PGPORT' 5432
-assert_env 'PGDB' postgres
 
-assert_env 'API_DB_SCHEMA'
-assert_env 'API_ANON_ROLE'
-assert_env 'API_DB_POOL'
-assert_env 'API_DB_POOL_TIMEOUT'
-assert_env 'API_DB_PORT'
-# 'API_PROXY_URI' -- need not be set
+assert_env 'PGHOST'
+assert_env 'PGPORT'
+assert_env 'PGDB'
+
+assert_env 'PGST_PORT'
+assert_env 'PGST_USER'
+assert_env 'PGST_PASS'
+assert_env 'PGST_SCHEMA'
+assert_env 'PGST_ANON_ROLE'
+assert_env 'PGST_POOL'
+assert_env 'PGST_POOL_TIMEOUT'
+
 
 cat << EOF
-db-uri = "postgres://${API_PG_USER}:${API_PG_PASSWORD}@${PGHOST}:${PGPORT}/${PGDB}"
-db-schema = "${API_DB_SCHEMA}" # this schema gets added to the search_path of every request
-db-anon-role = "${API_ANON_ROLE}"
+db-uri = "postgres://${PGST_USER}:${PGST_PASS}@${PGHOST}:${PGPORT}/${PGDB}"
+db-schema = "${PGST_SCHEMA}" # this schema gets added to the search_path of every request
+db-anon-role = "${PGST_ANON_ROLE}"
 
-db-pool = ${API_DB_POOL}
-db-pool-timeout = ${API_DB_POOL_TIMEOUT}
+db-pool = ${PGST_POOL}
+db-pool-timeout = ${PGST_POOL_TIMEOUT}
 
 # server-host = "!4"
-server-port = ${API_DB_PORT}
+server-port = ${PGST_PORT}
 
 ## unix socket location
 ## if specified it takes precedence over server-port
